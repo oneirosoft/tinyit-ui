@@ -8,11 +8,11 @@ const Home = () => {
     const [urlList,] = useAtom(urlListAtom)
 
     return (
-        <>
+        <div className='home'>            
             <h1 className='title'>Tiny It</h1>
             <UrlInput />
             <UrlList items={urlList} />
-        </>
+        </div>
     )
 }
 

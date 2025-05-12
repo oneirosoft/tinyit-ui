@@ -1,5 +1,13 @@
-.title {
-    font-size: 3rem;
-    color: var(--text);
-    font-family: Array, system-ui, Avenir, Helvetica, Arial, sans-serif;
+.home {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--background);
+    
+    .title {
+        font-size: 3rem;
+        color: var(--text);
+        font-family: Array, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    }
 }
