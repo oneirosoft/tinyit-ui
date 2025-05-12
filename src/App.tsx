@@ -4,7 +4,7 @@ import {
   Routes,
   Route
 } from 'react-router'
-import { Home, RedirectPage, NotFound } from './pages'
+import { Home, Redirect, NotFound } from './pages'
 import { AppBar } from './components'
 
 function App() {
@@ -17,7 +17,7 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path='/' element={<Home />} />
-            <Route path='/:id' element={<RedirectPage />} />
+            <Route path='/:id' element={<Redirect />} />
             <Route path='*' element={<NotFound />} />
           </Routes>
         </BrowserRouter>

@@ -34,7 +34,7 @@ const RedirectPage = () => {
     const Page = useCallback(() => {
         const redirect =
             <div className='redirect-page'>
-                <h1>Redirecting...</h1>
+                <h1 className='title'>Redirecting...</h1>
                 <p>If you are not redirected automatically, please click the link below:</p>
                 <a href={window.location.href}>{window.location.href}</a>
             </div>

@@ -1,9 +1,9 @@
 import Home from './Home/Home'
-import RedirectPage from './RedirectPage'
+import Redirect from './Redirect'
 import NotFound from './NotFound'
 
 export {
     Home,
-    RedirectPage,
+    Redirect,
     NotFound
 }
