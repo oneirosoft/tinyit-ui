@@ -4,10 +4,11 @@ import { removeUrlAction, type TinyUrl } from '../../atoms'
 import { useAtom } from 'jotai'
 
 interface UrlDetailsProps {
-  url: TinyUrl
+  url: TinyUrl,
+  onClick?: (url: TinyUrl) => void
 }
 
-const UrlDetails = ({ url }: UrlDetailsProps) => {
+const UrlDetails = ({ url, onClick }: UrlDetailsProps) => {
   const [copied, setCopied] = useState(false)
   const [entered, setEntered] = useState(false)
   const [, deleteUrl] = useAtom(removeUrlAction)
@@ -40,7 +41,7 @@ const UrlDetails = ({ url }: UrlDetailsProps) => {
   const shortenedUrl = origin + '/' + url.id
 
   return (
-    <li className={entered ? 'entering' : ''}>
+    <li className={entered ? 'entering' : ''} onClick={() => onClick && onClick(url)}>
       <div className='url-text'>
         <span className='short-code' aria-label={`shortened url with id ${url.id}`}>
           {url.id}
