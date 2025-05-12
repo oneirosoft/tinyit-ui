@@ -1,0 +1,103 @@
+.url-list {
+  width: 100%;
+  max-width: 800px;
+  margin-top: 16px;
+  padding: 0;
+  list-style: none;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 8px;
+  overflow: hidden;
+  max-height: 40dvh;
+  overflow-y: auto;
+
+  &:empty {
+    display: none;
+  }
+
+  li {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    color: var(--text);
+    border-bottom: 1px solid var(--input-border, #444);
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transform: scaleY(0.95);
+    transition: all 0.3s ease;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover {
+      background: rgba(187, 134, 252, 0.05); // subtle hover
+    }
+
+    &.entering {
+      max-height: 80px; // enough to fully show
+      opacity: 1;
+      transform: scaleY(1);
+      padding: 12px 16px; // make sure padding is included during animation
+    }
+  }
+
+  .url-text {
+    color: var(--text);
+    max-width: 75%;
+    display: flex;
+    flex-direction: column;
+
+    & > span {
+      padding: .25rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+    }
+
+    .short-code {
+      font-weight: 600;
+    }
+
+    .long-url {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      font-size: .85rem;
+      opacity: 0.8;
+    }
+  }
+
+  .url-actions {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+  }
+
+  button {
+    background: none;
+    border: none;
+    color: var(--accent);
+    cursor: pointer;
+    padding: .5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:focus {
+      outline: var(--accent) auto 2px;
+    }
+
+    &:hover {
+      background: rgba(187, 134, 252, 0.1);
+    }
+
+    .success {
+      color: var(--success);
+    }
+  }
+}
