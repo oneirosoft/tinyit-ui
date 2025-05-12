@@ -1,4 +1,4 @@
-import { Copy, ClipboardCheck, ExternalLink, Trash } from 'lucide-react'
+import { Copy, ClipboardCheck, ExternalLink, Trash, Share2 } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 import { removeUrlAction, type TinyUrl } from '../../atoms'
 import { useAtom } from 'jotai'
@@ -27,7 +27,21 @@ const UrlDetails = ({ url }: UrlDetailsProps) => {
     }).catch(err => {
       console.error('Failed to copy URL:', err);
     });
+  }
 
+  const shareUrl = async (url: string) => { 
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Check out this link!\n',
+          text: 'Shortened with Tiny It 🔗\n\n',
+          url: url,
+        });
+      } catch (error) {
+        console.error('Error sharing URL:', error);
+      }
+    }
+    else copyToClipboard(url)
   }
 
   const Icon = useCallback(() =>
@@ -50,6 +64,12 @@ const UrlDetails = ({ url }: UrlDetailsProps) => {
         </span>
       </div>
       <div className='url-actions'>
+        <button
+          type='button'
+          aria-label={`share ${url.url}`}
+          onClick={() => shareUrl(shortenedUrl)}>
+          <Share2 size={20} />
+        </button>
         <button
           type='button'
           aria-label='copy to clip board'
