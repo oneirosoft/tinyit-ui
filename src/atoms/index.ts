@@ -1,5 +1,5 @@
-import { atom } from "jotai";
-import { deleteUrlFromStorage, getStoredUrls, persistUrl } from "../data";
+import { atom } from "jotai"
+import { atomWithStorage } from "jotai/utils"
 
 export interface TinyUrl {
     id: string,
@@ -8,14 +8,10 @@ export interface TinyUrl {
 
 const MAX_ENTRIES = 5
 
-const getInitialUrlList = (): TinyUrl[] =>
-    getStoredUrls()
-
-export const urlListAtom = atom<TinyUrl[]>(getInitialUrlList())
+export const urlListAtom = atomWithStorage<TinyUrl[]>('urls', [])
 export const addUrlAction = atom(
     null,
     (get, set, value: TinyUrl) => {
-        persistUrl(value)
         const current = get(urlListAtom)
         const updated = [value, ...current.filter((item) => item.id !== value.id)]
             .slice(-MAX_ENTRIES);
@@ -27,7 +23,6 @@ export const addUrlAction = atom(
 export const removeUrlAction = atom(
     null,
     (get, set, value: TinyUrl) => {
-        deleteUrlFromStorage(value.id)
         const current = get(urlListAtom)
         const updated = current.filter((item) => item.id !== value.id)
 

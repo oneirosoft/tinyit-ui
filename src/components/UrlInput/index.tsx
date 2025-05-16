@@ -18,7 +18,6 @@ const UrlInput = () => {
     const handleClick = async () => {
         if (!isNullOrEmpty(inputRef.current?.value)) {
             const response = await shorten(inputRef.current.value)
-            console.log(response)
             addUrl(response)
             inputRef.current.value = ''
         }

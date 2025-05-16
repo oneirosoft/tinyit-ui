@@ -1,14 +1,14 @@
-import { Copy, ClipboardCheck, ExternalLink, Trash, Share2 } from 'lucide-react'
+import { Copy, ClipboardCheck, ExternalLink, Trash, Share2, Eye } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 import { removeUrlAction, type TinyUrl } from '../../atoms'
 import { useAtom } from 'jotai'
 
 interface UrlDetailsProps {
   url: TinyUrl,
-  onClick?: (url: TinyUrl) => void
+  onPreview?: (url: TinyUrl) => void
 }
 
-const UrlDetails = ({ url, onClick }: UrlDetailsProps) => {
+const UrlDetails = ({ url, onPreview }: UrlDetailsProps) => {
   const [copied, setCopied] = useState(false)
   const [entered, setEntered] = useState(false)
   const [, deleteUrl] = useAtom(removeUrlAction)
@@ -55,7 +55,7 @@ const UrlDetails = ({ url, onClick }: UrlDetailsProps) => {
   const shortenedUrl = origin + '/' + url.id
 
   return (
-    <li className={entered ? 'entering' : ''} onClick={() => onClick && onClick(url)}>
+    <li className={entered ? 'entering' : ''}>
       <div className='url-text'>
         <span className='short-code' aria-label={`shortened url with id ${url.id}`}>
           {url.id}
@@ -82,6 +82,12 @@ const UrlDetails = ({ url, onClick }: UrlDetailsProps) => {
           aria-label={`open ${url.url} in new tab`}
           onClick={() => window.open(url.url, '_blank')}>
           <ExternalLink size={20} />
+        </button>
+        <button
+          type='button'
+          aria-label={`preview ${url.url}`}
+          onClick={() => onPreview?.(url)}>
+          <Eye size={20} />
         </button>
         <button
           type='button'

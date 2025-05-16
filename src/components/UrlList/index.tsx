@@ -13,7 +13,7 @@ export default function UrlList({ items }: { items: TinyUrl[] }) {
           <UrlDetails 
             key={i}
             url={url}
-            onClick={tUrl => setPreviewUrl(tUrl.url)} />
+            onPreview={tUrl => setPreviewUrl(tUrl.url)} />
         ))}
       </ul>
       {previewUrl && (
