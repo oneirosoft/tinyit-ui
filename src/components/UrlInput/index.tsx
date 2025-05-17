@@ -6,19 +6,19 @@ import {
     SendHorizontal as Send
 } from 'lucide-react'
 import './styles.scss'
-import { useAtom } from 'jotai'
-import { addUrlAction } from '../../atoms'
+import { useSetAtom } from 'jotai'
+import { dispatchUrlAtom, addUrlAction } from '../../atoms'
 import { shorten } from '../../api'
 import { isNullOrEmpty } from '../../utils'
 
 const UrlInput = () => {
     const inputRef = useRef<HTMLInputElement>(null)
-    const [,addUrl] = useAtom(addUrlAction)
+    const dispatch = useSetAtom(dispatchUrlAtom)
 
     const handleClick = async () => {
         if (!isNullOrEmpty(inputRef.current?.value)) {
             const response = await shorten(inputRef.current.value)
-            addUrl(response)
+            dispatch(addUrlAction(response))
             inputRef.current.value = ''
         }
 

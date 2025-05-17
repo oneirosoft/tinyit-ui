@@ -17,7 +17,7 @@ export const shorten = (url: string): Promise<TinyUrl> => {
 
 type FetchResponse = ['ok', URL] | ['err']
 
-export const get = (id: string): Promise<FetchResponse> =>
+export const getShortened = (id: string): Promise<FetchResponse> =>
     fetch(`${apiUrl}/${id}`, {
         method: 'GET',
         credentials: 'include',
@@ -30,5 +30,5 @@ export const get = (id: string): Promise<FetchResponse> =>
 
 export default {
     shorten,
-    get,
+    getShortened,
 }

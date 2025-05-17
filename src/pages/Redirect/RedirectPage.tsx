@@ -3,8 +3,9 @@ import { useParams } from 'react-router'
 import Api from '../../api'
 import { isNullOrEmpty } from '../../utils'
 import NotFound from '../NotFound'
+
 import './styles.scss'
-import { persistVisited, getVisitedUrl } from '../../data'
+import { getVisitedUrl, persistVisited } from '../../data'
 
 const RedirectPage = () => {
     const { id } = useParams<{ id: string }>()
@@ -16,12 +17,14 @@ const RedirectPage = () => {
 
         const visited = getVisitedUrl(id)
 
+        console.log('visited', visited)
+
         if (visited) {
             window.location.replace(visited)
             return
         }
 
-        Api.get(id)
+        Api.getShortened(id)
             .then(([status, result]) => {
                 if (status === 'ok') {
                     persistVisited({ id, url: result.href })
