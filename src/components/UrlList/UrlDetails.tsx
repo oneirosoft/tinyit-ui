@@ -1,6 +1,6 @@
 import { Copy, ClipboardCheck, ExternalLink, Trash, Share2, Eye } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
-import { dispatchUrlAtom, removeUrlAction, type TinyUrl } from '../../atoms'
+import { removeUrlAtom, type TinyUrl } from '../../atoms'
 import { useSetAtom } from 'jotai'
 
 interface UrlDetailsProps {
@@ -11,7 +11,7 @@ interface UrlDetailsProps {
 const UrlDetails = ({ url, onPreview }: UrlDetailsProps) => {
   const [copied, setCopied] = useState(false)
   const [entered, setEntered] = useState(false)
-  const dispatch = useSetAtom(dispatchUrlAtom)
+  const removeUrl = useSetAtom(removeUrlAtom)
 
   useEffect(() => {
     const timeout = setTimeout(() => setEntered(true), 25)
@@ -92,7 +92,7 @@ const UrlDetails = ({ url, onPreview }: UrlDetailsProps) => {
         <button
           type='button'
           aria-label={`delete url with ${url.id}`}
-          onClick={() => dispatch(removeUrlAction(url))}>
+          onClick={() => removeUrl(url)}>
           <Trash size={20} />
         </button>
       </div>

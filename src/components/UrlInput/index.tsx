@@ -7,18 +7,18 @@ import {
 } from 'lucide-react'
 import './styles.scss'
 import { useSetAtom } from 'jotai'
-import { dispatchUrlAtom, addUrlAction } from '../../atoms'
+import { addUrlAtom } from '../../atoms'
 import { shorten } from '../../api'
 import { isNullOrEmpty } from '../../utils'
 
 const UrlInput = () => {
     const inputRef = useRef<HTMLInputElement>(null)
-    const dispatch = useSetAtom(dispatchUrlAtom)
+    const addUrl = useSetAtom(addUrlAtom)
 
     const handleClick = async () => {
         if (!isNullOrEmpty(inputRef.current?.value)) {
             const response = await shorten(inputRef.current.value)
-            dispatch(addUrlAction(response))
+            addUrl(response)
             inputRef.current.value = ''
         }
 
