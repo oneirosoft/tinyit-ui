@@ -28,7 +28,21 @@ export const getShortened = (id: string): Promise<FetchResponse> =>
         ['ok', new URL(url)] as FetchResponse)
     .catch(() => ['err'])
 
+export interface Metadata {
+    title: string
+    description: string
+    image: string
+    url: string
+}
+
+export const getMetadata = (url: string): Promise<Metadata | null> =>
+    fetch(`${apiUrl}/metadata?url=${encodeURIComponent(url)}`)
+        .then(resp => resp.json())
+        .catch(null)
+
+
 export default {
     shorten,
     getShortened,
+    getMetadata,
 }

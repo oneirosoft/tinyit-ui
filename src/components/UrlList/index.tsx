@@ -3,9 +3,15 @@ import type { TinyUrl } from '../../atoms';
 import './styles.scss'
 import UrlDetails from './UrlDetails'
 import UrlPreviewModal from '../UrlPreviewModal';
+import { getMetadata, type Metadata } from '../../api';
 
 export default function UrlList({ items }: { items: TinyUrl[] }) {
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null)
+  const [metadata, setMetadata] = useState<Metadata | null>(null)
+
+  const handlePreview = (url: string) => {
+    getMetadata(url).then(setMetadata)
+  }
+
   return (
     <>
       <ul className="url-list">
@@ -13,15 +19,15 @@ export default function UrlList({ items }: { items: TinyUrl[] }) {
           <UrlDetails 
             key={i}
             url={url}
-            onPreview={tUrl => setPreviewUrl(tUrl.url)} />
+            onPreview={tUrl => handlePreview(tUrl.url)} />
         ))}
       </ul>
-      {previewUrl && (
+      {metadata && (
         <UrlPreviewModal
-          url={previewUrl}
-          onClose={() => setPreviewUrl(null)}
+          metadata={metadata}
+          onClose={() => setMetadata(null)}
           onContinue={() => {
-            window.location.href = previewUrl
+            window.location.href = metadata.url
           }}
         />
       )}
