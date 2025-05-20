@@ -20,6 +20,9 @@ jobs:
         run:
           bun install
       
+      - name: Create .env.production file
+        run: echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" > .env.production
+      
       - name: Build the project
         run: |
           bun run build
