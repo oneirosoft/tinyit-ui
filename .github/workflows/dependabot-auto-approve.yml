@@ -1,7 +1,7 @@
 name: Dependabot Auto Approve
 
 on:
-  pull_request_target:
+  pull_request:
     types: [opened, synchronize, reopened]
 
 permissions:
@@ -15,12 +15,12 @@ jobs:
     steps:
       - name: Fetch Dependabot metadata
         id: metadata
-        uses: dependabot/fetch-metadata@v2
+        uses: dependabot/fetch-metadata@21025c705c08248db411dc16f3619e6b5f9ea21a # v2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Approve minor and patch updates
-        uses: actions/github-script@v7
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
         env:
           UPDATE_TYPE: ${{ steps.metadata.outputs.update-type }}
         with:
@@ -37,15 +37,33 @@ jobs:
             const { owner, repo } = context.repo;
             const pull_number = context.payload.pull_request.number;
 
-            const reviews = await github.paginate(github.rest.pulls.listReviews, {
-              owner,
-              repo,
-              pull_number,
-            });
+            let alreadyApproved = false;
+            let page = 1;
+            // 10 pages x 100 reviews covers up to 1,000 reviews for a single PR.
+            const maxPages = 10;
+            while (!alreadyApproved && page <= maxPages) {
+              const { data: reviews } = await github.rest.pulls.listReviews({
+                owner,
+                repo,
+                pull_number,
+                per_page: 100,
+                page,
+              });
 
-            const alreadyApproved = reviews.some(
-              (review) => review.user?.login === 'github-actions[bot]' && review.state === 'APPROVED',
-            );
+              alreadyApproved = reviews.some(
+                (review) => review.user?.login === 'github-actions[bot]' && review.state === 'APPROVED',
+              );
+
+              if (alreadyApproved || reviews.length < 100) {
+                break;
+              }
+
+              page += 1;
+            }
+
+            if (!alreadyApproved && page > maxPages) {
+              core.info('Reached review page limit while checking existing approvals.');
+            }
 
             if (alreadyApproved) {
               core.info('Pull request already approved by github-actions[bot].');
