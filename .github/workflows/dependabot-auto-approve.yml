@@ -1,0 +1,79 @@
+name: Dependabot Auto Approve
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  auto-approve:
+    if: ${{ github.actor == 'dependabot[bot]' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch Dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@5e5f8343f5c5db9fee0c6ea0b5c01fe2f0c30c9c # v2.3.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Approve minor and patch updates
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
+        env:
+          UPDATE_TYPE: ${{ steps.metadata.outputs.update-type }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const updateType = process.env.UPDATE_TYPE;
+            const allowedTypes = ['version-update:semver-minor', 'version-update:semver-patch'];
+
+            if (!allowedTypes.includes(updateType)) {
+              core.info(`Skipping auto-approval for update type: ${updateType}`);
+              return;
+            }
+
+            const { owner, repo } = context.repo;
+            const pull_number = context.payload.pull_request.number;
+
+            let alreadyApproved = false;
+            let page = 1;
+            // 10 pages x 100 reviews covers up to 1,000 reviews for a single PR.
+            const maxPages = 10;
+            while (!alreadyApproved && page <= maxPages) {
+              const { data: reviews } = await github.rest.pulls.listReviews({
+                owner,
+                repo,
+                pull_number,
+                per_page: 100,
+                page,
+              });
+
+              alreadyApproved = reviews.some(
+                (review) => review.user?.login === 'github-actions[bot]' && review.state === 'APPROVED',
+              );
+
+              if (alreadyApproved || reviews.length < 100) {
+                break;
+              }
+
+              page += 1;
+            }
+
+            if (!alreadyApproved && page > maxPages) {
+              core.info('Reached review page limit while checking existing approvals.');
+            }
+
+            if (alreadyApproved) {
+              core.info('Pull request already approved by github-actions[bot].');
+              return;
+            }
+
+            await github.rest.pulls.createReview({
+              owner,
+              repo,
+              pull_number,
+              event: 'APPROVE',
+              body: `Auto-approved Dependabot ${updateType} update.`,
+            });
